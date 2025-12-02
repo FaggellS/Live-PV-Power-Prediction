@@ -63,6 +63,10 @@ class Simulator:
     ## what we call when starting simulation
     def run(self, is_demo_mode, pred_interval, sliding_window, pred_horizon, max_loop = 0):
 
+        if is_demo_mode == False:
+            print("live mode is not complete yet !! switching to demo mode for now still")
+            is_demo_mode = True
+
         
         self.demo_mode = is_demo_mode
 

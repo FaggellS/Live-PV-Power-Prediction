@@ -43,7 +43,7 @@ def plot_pv(full_df, sw, ps):
     fig = plt.Figure(figsize=(15, 8), dpi=100)
 
     ax = fig.add_subplot(111)
-    ax.set_title("Predicted PV Output Over Time")
+    ax.set_title(f"Predicted PV Output Over Time\nWith Sliding window: {sw}, and Pred. interval: {ps * 10}")
     ax.set_xlabel(x_label, labelpad=15)
     ax.set_ylabel("Output (W)", labelpad=15)
 
@@ -96,13 +96,9 @@ def plot_rmse(full_df, sw, ps):
     fig = plt.Figure(figsize=(15, 8), dpi=100)
     ax = fig.add_subplot(111)
     
-    ax.set_title("RMSE over time")
+    ax.set_title(f"RMSE over time\nWith Sliding window: {sw}, and Pred. interval: {ps * 10}")
     ax.set_xlabel(x_label, labelpad=15)
     ax.set_ylabel("Relative RMSE score", labelpad=15)
-
-    ax.figtext(.8, .85, f"Sliding window: {sw}, Pred. interval: {ps * 10}", fontsize=12, ha='center')
-
-    ax.figtext(.8, .80, f"Additional info or metrics can go here", fontsize=12, ha='center')
 
 
     ax.plot(times, full_df["rmse"])
