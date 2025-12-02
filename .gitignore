@@ -12,3 +12,5 @@ wheels/
 output/
 data/
 src/model/weights/
+.ipynb_checkpoints/
+src/.ipynb_checkpoints/
