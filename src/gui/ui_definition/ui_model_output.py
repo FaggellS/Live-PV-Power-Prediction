@@ -23,7 +23,10 @@ def update_output_labels(table_labels, output_data):
 
 
     if isinstance(output_data["pred_t"], float):
-        table_labels[1][0]["text"] = f"{output_data["pred_t"]:.2F} (W)"
+        if output_data["pred_t"] == -1:
+             table_labels[1][0]["text"] = "--"
+        else:
+            table_labels[1][0]["text"] = f"{output_data["pred_t"]:.2F} (W)"
     
     if isinstance(output_data["true_t"], float):
         if output_data["true_t"] == -1:

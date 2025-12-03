@@ -87,7 +87,7 @@ class Simulator:
 
         if self.retrain_mode:
             self.retrain_buffer = []   # stores (seq, target)
-            self.max_retrain_buffer = 200 
+            self.max_retrain_buffer = self.sliding_window
 
         print(f"simulation started with the following parameters: demo mode: {self.demo_mode}, pred_interval: {pred_interval}, sliding window: {sliding_window}, pred horizon: {self.pred_step}")
 
