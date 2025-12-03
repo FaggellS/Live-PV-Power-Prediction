@@ -37,6 +37,19 @@ def define_parameter_frame(param_frame, interval_values, sliding_values, ahead_v
 
     frm.pack(padx=40, pady=10, anchor="nw", fill=tk.X)
 
+    ## X - Online Retraining
+
+    frm = tk.Frame(param_frame, borderwidth=10, bg="gray" )
+
+    tk.Label(frm, text="Activate Online Retraining:", bg="gray", font=("Helvetica", 12, "bold")).grid(row=0, column=0)
+
+    retrain = tk.IntVar()
+    retrain_b = tk.Checkbutton(frm, variable=retrain, onvalue=True, offvalue=False, bg="gray")
+    
+    retrain_b.grid(row=0, column=1, padx=10)
+
+    frm.pack(padx=40, pady=10, anchor="nw", fill=tk.X)
+
     ## 1 - prediction interval
 
     tk.Label(param_frame, text="Prediction Interval:", bg="gray", borderwidth=15, font=("Helvetica", 12, "bold")).pack(padx=40, anchor="nw")
@@ -81,4 +94,4 @@ def define_parameter_frame(param_frame, interval_values, sliding_values, ahead_v
     
     
 
-    return demo_mode, interval_cb, sliding_cb, ahead_cb,  cb1_n, cb2_n, cb3_n
+    return demo_mode, retrain, interval_cb, sliding_cb, ahead_cb,  cb1_n, cb2_n, cb3_n

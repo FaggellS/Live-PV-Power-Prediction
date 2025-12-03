@@ -1,9 +1,9 @@
 from data_storage.storage_manager import Storage
 
-from data_processing.normalize import normalize_list, denormalize_pred
+from data_processing.normalize import normalize_list, denormalize_pred, normalize_pred
 from data_processing.format import format_for_model, prepare_input
 
-from model.model import MatlabLSTM
+from model.model import MatlabLSTM, online_retrain
 from model.load_weights import load_matlab_weights
 from model.predict import predict_from_sequence
 
@@ -13,6 +13,10 @@ from threading import Event
 
 from time import time
 from datetime import datetime, timedelta
+
+import torch
+
+
 
 class Simulator:
 
@@ -29,9 +33,14 @@ class Simulator:
 
         self.gui_update = None
 
-        self.demo_start_time = datetime(2024, 9, 6, 5, 0, 0)
-        self.demo_end_time = datetime(2024, 9, 8, 5, 0, 0)
+        self.start_time = None
+        self.end_time = None
+
+        self.demo_start_time = datetime(2024, 9, 6, 7, 0, 0)
+        self.demo_end_time = datetime(2024, 9, 8, 7, 0, 0)
         self.demo_mode = False
+
+        self.retrain_every = 5
 
 
     # gui callback
@@ -47,9 +56,9 @@ class Simulator:
             print("\nStop requested.\n")
 
         output_dict = {
-            "time_t":None, 
-            "time_tplus":None, 
-            "rmse": None,
+            "time_start":None, 
+            "time_end":None, 
+            "interval": None,
             "input_data":None,
             "output_data":None
         }
@@ -61,7 +70,7 @@ class Simulator:
 
 
     ## what we call when starting simulation
-    def run(self, is_demo_mode, pred_interval, sliding_window, pred_horizon, max_loop = 0):
+    def run(self, is_demo_mode, is_retrain_mode, pred_interval, sliding_window, pred_horizon, max_loop = 0):
 
         if is_demo_mode == False:
             print("live mode is not complete yet !! switching to demo mode for now still")
@@ -73,6 +82,12 @@ class Simulator:
         self.sliding_window = sliding_window
         self.pred_interval = pred_interval
         self.pred_step = int( pred_horizon / 10 )
+
+        self.retrain_mode = is_retrain_mode
+
+        if self.retrain_mode:
+            self.retrain_buffer = []   # stores (seq, target)
+            self.max_retrain_buffer = 200 
 
         print(f"simulation started with the following parameters: demo mode: {self.demo_mode}, pred_interval: {pred_interval}, sliding window: {sliding_window}, pred horizon: {self.pred_step}")
 
@@ -90,6 +105,7 @@ class Simulator:
         if self.demo_mode:
 
             self.start_time = self.demo_start_time
+            self.end_time = self.demo_end_time
 
         else:
 
@@ -160,7 +176,7 @@ class Simulator:
             timestamp = self.demo_start_time
             timestamp = advance_time(timestamp, self.loop, self.pred_interval) # warning ! not pred interval but pred horizon !
 
-            if timestamp >= self.demo_end_time:
+            if timestamp >= self.end_time:
 
                 # if we arrive at the end of the closed interval of time, we set the stop flag
                 self.stop()
@@ -169,15 +185,15 @@ class Simulator:
 
         timestamp, _ = self.storage.process_new_input(timestamp)
 
-        print(f"\n---------------------head start loop: {self.storage.head}\nahead start loop:{self.storage.ahead}\n")
+        #print(f"\n---------------------head start loop: {self.storage.head}\nahead start loop:{self.storage.ahead}\n")
         ##
 
         inputs_raw = self.storage.get_sequence( timestamp, self.sliding_window)
 
         output_dict = {
-                "time_t":self.start_time, 
-                "time_tplus":ts + timedelta(minutes=self.pred_interval), 
-                "rmse": self.storage.get_by_cat("rmse"),
+                "time_start":self.start_time, 
+                "time_end":self.end_time, 
+                "interval": self.pred_interval,
                 "input_data":None,
                 "output_data":None
             }
@@ -201,21 +217,51 @@ class Simulator:
 
         print(f"\n---------------TIME: {timestamp}\n---------------INPUT: {inputs_raw}\n---------------OUTPUT: {pred}")
 
+
+
+        ## retrain
+
+        if self.retrain_mode:
+            
+
+            xs = torch.tensor(x, dtype=torch.float32)
+
+
+
+            self.retrain_buffer.append((xs, normalize_pred(self.storage.df["true_power"].iloc[-1])  )  )
+
+            # keep buffer small
+            if len(self.retrain_buffer) > self.max_retrain_buffer:
+                self.retrain_buffer.pop(0) 
+
+        
+            if self.loop % self.retrain_every == 0:
+
+                print("--------### WE RETRAIN TODAY")
+
+                self.model = online_retrain(
+                    self.model,
+                    self.retrain_buffer)
+
+        #output_strings = format_for_gui(inputs_formatted, self.storage.head, pred, pred_time, self.loop)
+
         pred_time = time() - ti
 
         self.storage.change_head(timestamp, self.pred_step, pred, pred_time)
 
-        print(f"\n---------------------head end loop: {self.storage.head}\nahead end loop:{self.storage.ahead}\n")
-
-        #output_strings = format_for_gui(inputs_formatted, self.storage.head, pred, pred_time, self.loop)
+        #print(f"\n----------------{self.storage.get_k_latest(1)}")
+        #print(f"\n---------------------head end loop: {self.storage.head}\nahead end loop:{self.storage.ahead}\n")
 
         ##
         
         output_dict["output_data"] = {
-            "pred_power": pred,
-            "pred_time": pred_time,
-            "loop": self.loop,
-            "time": timestamp
+            "time_t": timestamp,
+            "time_tplus":timestamp + timedelta(minutes= (self.pred_step * 10)),
+            "pred_t": self.storage.df["pred_power"].iloc[-1],
+            "pred_tplus":pred,
+            "true_t":self.storage.df["true_power"].iloc[-1],
+            "rmse": self.storage.get_by_cat("rmse"), 
+            "speed": pred_time
         }
 
         if self.gui_update is not None:

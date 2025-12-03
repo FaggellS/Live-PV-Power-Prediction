@@ -58,6 +58,10 @@ class GUI:
         if self.demo_mode.get() == 1:
             is_demo_mode = True
 
+        is_retrain_mode = False
+        
+        if self.retrain_mode.get() == 1:
+            is_retrain_mode = True
 
 
         param1 = float(self.param_box1.get().split(" ")[1]) # "Every X minute(s)"
@@ -66,7 +70,7 @@ class GUI:
 
         self.thread = Thread(
             target = self.simulator.run,
-            args = (is_demo_mode, param1, param2, param3, ),
+            args = (is_demo_mode, is_retrain_mode, param1, param2, param3, ),
             daemon = True
         )
 
@@ -102,7 +106,7 @@ class GUI:
     def build_ui(self):
                 
 
-        self.demo_mode, self.param_box1, self.param_box2, self.param_box3, self.param_lb1, self.param_lb2, self.param_lb3 = ui_simulator_params.define_parameter_frame(self.parameter_frame, self.interval_values, self.sliding_values, self.ahead_values)
+        self.demo_mode, self.retrain_mode, self.param_box1, self.param_box2, self.param_box3, self.param_lb1, self.param_lb2, self.param_lb3 = ui_simulator_params.define_parameter_frame(self.parameter_frame, self.interval_values, self.sliding_values, self.ahead_values)
 
         self.button_frame, self.start_button, self.stop_button = ui_simulator_params.define_buttons(self.button_frame, self.startButtonPressed, self.stopButtonPressed)
 
@@ -112,7 +116,7 @@ class GUI:
 
         self.output_frame, self.output_grid, self.output_table_labels = ui_model_output.define_output_frame(self.output_frame)
 
-        self.status, self.start_time, self.finish_time, self.rmse_label = ui_misc.define_misc(self.top_bar, self.bottom_bar)
+        self.status, self.start_time, self.finish_time, self.middle_label = ui_misc.define_misc(self.top_bar, self.bottom_bar)
 
 
 

@@ -17,6 +17,9 @@ SIG_T = 5602.8786687436795546091161668300628662109375
 def denormalize_pred(num):
     return num * SIG_T + MU_T
 
+def normalize_pred(num):
+    return (num - MU_X[2]) / SIG_X[2]
+
 def normalize_list(ls):
 
     return [normalize_datapoint(entry) for entry in ls]

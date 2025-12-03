@@ -3,16 +3,42 @@ import tkinter as tk
 
 def update_output_labels(table_labels, output_data):
 
-    table_labels[0]["text"] = output_data["loop"]
-    table_labels[1]["text"] = output_data["time"]
-    table_labels[2]["text"] = output_data["pred_power"]
-    table_labels[3]["text"] = output_data["pred_time"]
+    
+    if len(output_data["rmse"]) == 0:
 
-    if isinstance(output_data["pred_power"], float):
-            table_labels[2]["text"] = f"{output_data["pred_power"]:.2F} (W)"
+            score = 0.0
+    else:
+            score = output_data["rmse"][-1]
 
-    if isinstance(output_data["pred_time"], float):
-            table_labels[3]["text"] = f"{output_data["pred_time"]:.2F} (s)"
+    table_labels[0][0]["text"] = output_data["time_t"]
+    table_labels[1][0]["text"] = output_data["pred_t"]
+    table_labels[2][0]["text"] = output_data["true_t"]
+    table_labels[3][0]["text"] = score
+
+
+    table_labels[0][1]["text"] = output_data["time_tplus"]
+    table_labels[1][1]["text"] = output_data["pred_tplus"]
+    table_labels[2][1]["text"] = output_data["speed"]
+
+
+
+    if isinstance(output_data["pred_t"], float):
+        table_labels[1][0]["text"] = f"{output_data["pred_t"]:.2F} (W)"
+    
+    if isinstance(output_data["true_t"], float):
+        if output_data["true_t"] == -1:
+             table_labels[2][0]["text"] = "--"
+        else:
+            table_labels[2][0]["text"] = f"{output_data["true_t"]:.2F} (W)"
+
+    if isinstance(output_data["pred_tplus"], float):
+        table_labels[1][1]["text"] = f"{output_data["pred_tplus"]:.2F} (W)"
+
+    if isinstance(output_data["speed"], float):
+            table_labels[2][1]["text"] = f"{output_data["speed"]:.2F} (s)"
+
+    if isinstance(score, float):
+            table_labels[3][0]["text"] = f"{score:.2F} (s)"
 
     return table_labels
 
@@ -20,20 +46,39 @@ def update_output_labels(table_labels, output_data):
 
 def initialize_output_labels(output_grid, table_labels):
 
-    for lbl in table_labels:
-         lbl.destroy()
+    for labels in table_labels:
+        for lbl in labels:
+            lbl.destroy()
 
     table_labels = []
 
-    for i, txt in enumerate(["Loop:", "Prediction Time:", f"Predicted PV Power:", "Computation Speed:"]):
+    left_text = ["Current Time:", "Pred. PV (Current):", "Real PV:", "Relative RMSE score:"]
+    right_text = ["Prediction Time:", "Pred. PV (Future):", "Computation Time:", ""]
 
-        lbl1 = tk.Label(output_grid, text = txt, width=20, bg='lightgray', font=("Helvetica", 10, "bold"))
-        lbl1.grid(row = i, column=0, padx=10, pady=10)
+    for i in range (4):
 
-        lbl2 = tk.Label(output_grid, text="--", bg='gray', font=("Helvetica", 11, "bold"))
-        lbl2.grid(row = i, column=1, padx=10, pady = 8)
+        print(f"-----------------{left_text[i]}")
 
-        table_labels.append(lbl2)
+        lbl0 = tk.Label(output_grid, text = left_text[i], width=20, bg='lightgray', font=("Helvetica", 10, "bold"))
+        lbl0.grid(row = i, column=0, padx=10, pady=10)
+
+        lbl1 = tk.Label(output_grid, text="--", bg='gray', font=("Helvetica", 11, "bold"))
+        lbl1.grid(row = i, column=1, padx=10, pady = 8)
+
+        lbl2 = tk.Label(output_grid, text = right_text[i], width=20, bg='lightgray', font=("Helvetica", 10, "bold"))
+        lbl3 = tk.Label(output_grid, text="--", bg='gray', font=("Helvetica", 11, "bold"))
+
+        if i == 3:
+             lbl3.config(text="", bg= "gray")
+             lbl2.config(text="", bg= "gray")
+
+       
+        lbl2.grid(row = i, column=2, padx=10, pady=10)
+        lbl3.grid(row = i, column=3, padx=10, pady = 8)
+
+
+
+        table_labels.append([lbl1, lbl3])
 
     
 
@@ -52,6 +97,8 @@ def define_output_frame(output_frame):
 
     output_grid.columnconfigure(0, weight=1)
     output_grid.columnconfigure(1, weight=2)
+    output_grid.columnconfigure(2, weight=1)
+    output_grid.columnconfigure(3, weight=2)
 
     output_grid, output_table_labels = initialize_output_labels(output_grid, [])
 

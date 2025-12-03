@@ -14,3 +14,15 @@ def startSimulation():
     
 
     gui.run()
+
+
+
+
+if __name__ == "__main__":
+    simulator = Simulator()
+
+    gui = GUI(simulator)
+
+    
+
+    gui.run()
