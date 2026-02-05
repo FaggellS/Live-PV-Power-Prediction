@@ -22,7 +22,7 @@ class Simulator:
 
     def __init__(self):
         
-        print("Initialize Simulator")
+        print("\n------------------\n\nsimulation.py - Initialize Simulator\n")
 
         self.storage = Storage()
 
@@ -38,6 +38,8 @@ class Simulator:
 
         self.demo_start_time = datetime(2024, 9, 6, 7, 0, 0)
         self.demo_end_time = datetime(2024, 9, 8, 7, 0, 0)
+
+        
         self.demo_mode = False
 
         self.retrain_every = 5
@@ -53,7 +55,7 @@ class Simulator:
 
         if (not self.stop_event.is_set()):
             self.stop_event.set()
-            print("\nStop requested.\n")
+            print("\nsimulation.py - Stop requested.\n")
 
         output_dict = {
             "time_start":None, 
@@ -73,7 +75,7 @@ class Simulator:
     def run(self, is_demo_mode, is_retrain_mode, pred_interval, sliding_window, pred_horizon, max_loop = 0):
 
         if is_demo_mode == False:
-            print("live mode is not complete yet !! switching to demo mode for now still")
+            print("simulation.py - live mode is not complete yet !! switching to demo mode")
             is_demo_mode = True
 
         
@@ -89,7 +91,6 @@ class Simulator:
             self.retrain_buffer = []   # stores (seq, target)
             self.max_retrain_buffer = self.sliding_window
 
-        print(f"simulation started with the following parameters: demo mode: {self.demo_mode}, pred_interval: {pred_interval}, sliding window: {sliding_window}, pred horizon: {self.pred_step}")
 
         self.stop_event.clear()
 
@@ -118,18 +119,17 @@ class Simulator:
         ### LOOP:
         while not self.stop_event.is_set() and (self.loop < max_loop or no_loop_limit):
 
-            print(f"\ncommencing loop no. {self.loop}..\n")
+            print(f"\nsimulation.py - Commencing loop no. {self.loop}..\n")
 
             elapsed = self.loop_content()
 
-            print(f"\n.. finished loop no. {self.loop}: took {(elapsed):.2f} seconds\n\n")
+            print(f"\nsimulation.py - Finished loop no. {self.loop}: took {(elapsed):.2f} seconds\n\n")
 
             self.loop += 1
 
             # if attained loop limit, break before sleep
 
             if (not no_loop_limit and self.loop >= max_loop):
-                print("Loop stopped before sleeping\n")
                 self.stop()
                 break
 
@@ -138,15 +138,15 @@ class Simulator:
             wait_in_seconds = pred_interval * 60
             sleep_time = wait_in_seconds - elapsed
 
-            print(f"- Sleeping for {sleep_time:.2f} seconds..")
+            print(f"simulation.py - Sleeping for {sleep_time:.2f} seconds..")
 
             self.sleep(sleep_time)
 
-            print(f"- Done Sleeping ! \n")
+            print(f"simulation.py - Done Sleeping ! \n")
 
             
         
-        print("\nSimulation ended\n\n------------------\n")
+        print("\nsimulation.py - Simulation ended\n\n------------------\n")
 
         # update gui one final time
 
@@ -174,7 +174,7 @@ class Simulator:
         if self.demo_mode:
 
             timestamp = self.demo_start_time
-            timestamp = advance_time(timestamp, self.loop, self.pred_interval) # warning ! not pred interval but pred horizon !
+            timestamp = advance_time(timestamp, self.loop, self.pred_interval)
 
             if timestamp >= self.end_time:
 
@@ -185,8 +185,7 @@ class Simulator:
 
         timestamp, _ = self.storage.process_new_input(timestamp)
 
-        #print(f"\n---------------------head start loop: {self.storage.head}\nahead start loop:{self.storage.ahead}\n")
-        ##
+
 
         inputs_raw = self.storage.get_sequence( timestamp, self.sliding_window)
 
@@ -215,10 +214,6 @@ class Simulator:
 
         pred = denormalize_pred(pred_normalized)
 
-        print(f"\n---------------TIME: {timestamp}\n---------------INPUT: {inputs_raw}\n---------------OUTPUT: {pred}")
-
-
-
         ## retrain
 
         if self.retrain_mode:
@@ -237,22 +232,15 @@ class Simulator:
         
             if self.loop % self.retrain_every == 0:
 
-                print("--------### WE RETRAIN TODAY")
-
                 self.model = online_retrain(
                     self.model,
                     self.retrain_buffer)
 
-        #output_strings = format_for_gui(inputs_formatted, self.storage.head, pred, pred_time, self.loop)
 
         pred_time = time() - ti
 
         self.storage.change_head(timestamp, self.pred_step, pred, pred_time)
 
-        #print(f"\n----------------{self.storage.get_k_latest(1)}")
-        #print(f"\n---------------------head end loop: {self.storage.head}\nahead end loop:{self.storage.ahead}\n")
-
-        ##
         
         output_dict["output_data"] = {
             "time_t": timestamp,

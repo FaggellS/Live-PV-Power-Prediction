@@ -9,7 +9,6 @@ wheels/
 # Virtual environments
 .venv
 
-output/
 data/
 src/model/weights/
 .ipynb_checkpoints/

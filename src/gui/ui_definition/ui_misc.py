@@ -6,7 +6,6 @@ import time
 
 
 def start_timer(root, label, tmax):
-    print(f"-------------------------------TMAAX: {tmax}")
     tmax = tmax * 60
     t0 = time.time() 
 

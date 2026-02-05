@@ -90,7 +90,6 @@ def get_last_simulated(timestamp):
 
         row = df.iloc[df.index.get_indexer([timestamp], method="nearest")]
 
-        print(f"HELLOOOOO : {row.index},\n{row.index[0]}")
 
         return row.index[0], row["irradiance"].item(), row["temperature"].item(), row["true_power"].item()
 
@@ -101,8 +100,6 @@ def get_last_simulated(timestamp):
         irr_row = irr_df[ irr_df["timestamp"] <= timestamp ].iloc[-1]
         temp_row = temp_df[ temp_df["timestamp"] <= timestamp ].iloc[-1]
         power_row = power_df[ power_df["timestamp"] <= timestamp ].iloc[-1]
-
-        print(f"extract check: irr_id == others: {irr_row["timestamp"] == temp_row["timestamp"]}, {irr_row["timestamp"] == power_row["timestamp"]}")
 
         return irr_df["timestamp"], irr_row["irradiance"].item(), temp_row["temperature"].item(), power_row["true_power"].item()
 

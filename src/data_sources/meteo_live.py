@@ -19,11 +19,10 @@ def fetch_sion_weather(timestamp):
     """
 
     try:
-        print("try fetching url")
         r = requests.get(BASE_URL, timeout=4)
         r.raise_for_status()
     except Exception as e:
-        print("MeteoSwiss API error:", e)
+        print("data_sources.meteo_live.py - MeteoSwiss API error:", e)
         return None, None
 
 
@@ -44,13 +43,9 @@ def fetch_sion_weather(timestamp):
 
     df = df.set_index("timestamp")
 
-    #row = df.iloc[df.index.get_indexer([timestamp], method="nearest")]
-
-    #temperature = row[temperature_col].item()
-    #radiation = row[radiation_col].item()
-
-
     return df #float(radiation), float(temperature)
+
+
 
 def fetch_last(timestamp):
 

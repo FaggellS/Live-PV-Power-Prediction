@@ -13,7 +13,7 @@ l3_wb_path = "model/weights/l3_wb.mat"
 l3_bias_path = "model/weights/l3_bias.mat"
 
 def _to_tensor(a):
-    # ensure numpy float32 and contiguous
+    # check
     a = np.array(a, dtype=np.float32)
     return torch.from_numpy(a)
 
@@ -22,7 +22,7 @@ def _to_tensor(a):
 
 def load_matlab_weights( model: MatlabLSTM ):
     """
-    load .mat arrays and set PyTorch model weights in-place.
+    load .mat arrays and set pytorch model weights in-place.
     """
 
    
@@ -34,7 +34,7 @@ def load_matlab_weights( model: MatlabLSTM ):
                 continue
             if isinstance(v, np.ndarray):
                 return v
-        raise ValueError(f"No array found in {path}")
+        raise ValueError(f"no array found in {path}")
 
 
     W_in = load_first_array(l2_inp_wb_path) # (4H, input_size)
@@ -57,7 +57,7 @@ def load_matlab_weights( model: MatlabLSTM ):
 
     if W_in.shape != expected_Win_shape:
         if W_in.T.shape == expected_Win_shape:
-            print("Transposing W_in to match expected shape")
+            # transposing W_in to match expected shape
             W_in = W_in.T
         else:
             raise RuntimeError(f"W_in shape {W_in.shape} does not match expected {expected_Win_shape}")
@@ -65,7 +65,7 @@ def load_matlab_weights( model: MatlabLSTM ):
 
     if W_rec.shape != expected_Wrec_shape:
         if W_rec.T.shape == expected_Wrec_shape:
-            print("Transposing W_rec to match expected shape")
+            #transposing W_rec to match expected shape
             W_rec = W_rec.T
         else:
             raise RuntimeError(f"W_rec shape {W_rec.shape} does not match expected {expected_Wrec_shape}")
@@ -90,5 +90,5 @@ def load_matlab_weights( model: MatlabLSTM ):
         model.fc.bias.copy_(b_fc_t.view(-1))
 
 
-    print("Weights loaded into PyTorch model")
+    print("model.load_weights - weights loaded into pytorch model")
     return model

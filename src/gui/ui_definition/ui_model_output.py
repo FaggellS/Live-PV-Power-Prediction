@@ -41,7 +41,7 @@ def update_output_labels(table_labels, output_data):
             table_labels[2][1]["text"] = f"{output_data["speed"]:.2F} (s)"
 
     if isinstance(score, float):
-            table_labels[3][0]["text"] = f"{score:.2F} (s)"
+            table_labels[3][0]["text"] = f"{score:.2F}"
 
     return table_labels
 
@@ -60,7 +60,6 @@ def initialize_output_labels(output_grid, table_labels):
 
     for i in range (4):
 
-        print(f"-----------------{left_text[i]}")
 
         lbl0 = tk.Label(output_grid, text = left_text[i], width=20, bg='lightgray', font=("Helvetica", 10, "bold"))
         lbl0.grid(row = i, column=0, padx=10, pady=10)

@@ -17,7 +17,7 @@ class GUI:
 
     def __init__(self, simulator):
 
-        print("Initialize GUI...")
+        print("gui_manager.py - Initialize GUI...\n")
 
         self.thread: Optional[Thread] = None
 
@@ -45,7 +45,6 @@ class GUI:
     ## BUTTONS BEHAVIOR
 
     def startButtonPressed(self):
-        print("start button pressed")
 
         if not self.thread or not self.thread.is_alive():
             try:
@@ -84,7 +83,6 @@ class GUI:
         # set status to ON
 
     def stopButtonPressed(self):
-        print("stop button pressed")
 
         try:
             self.simulator.stop()
