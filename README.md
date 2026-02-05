@@ -1,5 +1,12 @@
 # Framework to Test Live PV Power Prediction
 
+## Goal
+
+> The objective for this project was to build a simulation framework in which we can operate a NN model that predicts PV power output in a near real-time setting.
+
+For reference, here is how this project is structured:
+![Project Architecture](/data/assets/architecture.jpg)
+
 ## Requirements
 
 I have used the environment / package manager **uv** for this project, you are free to use it or not.
@@ -68,6 +75,8 @@ Those 3 files will be overwritten once you start a new simulation, and if you qu
 ## Notes
 
 - The program cannot function with live input as of yet, as it still needs to integrate a stream of live PV input, and the stream of live meteo data only accounts for solar radiation, not irradiance directly.
+- The demo mode fast forwards X minutes ahead after whichever interval you specified, taking historical data as if it were the current date and time. It runs during the span of two days and then terminates the simulation. You can modify the start and end time of the demo mode in **`src/simulation.py`**.
+
 
 
 
