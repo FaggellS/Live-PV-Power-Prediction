@@ -6,8 +6,11 @@ from os.path import dirname, join as pjoin
 
 from datetime import timedelta
 
-
 from matplotlib.ticker import MaxNLocator
+
+
+rmse_graph_path = pjoin("..", "output", "graph_rmse.png")
+pv_graph_path = pjoin("..","output","graph_pv.png")
 
 
 
@@ -69,8 +72,7 @@ def plot_pv(full_df, sw, ps):
         ax.set_xticks(range(0, len(times), 18))
         ax.set_xticklabels(scope3[::18])
 
-
-    fig.savefig(pjoin("..","output","graph_pv.png"))
+    fig.savefig(pv_graph_path)
 
 
 
@@ -120,7 +122,7 @@ def plot_rmse(full_df, sw, ps):
 
 
 
-    fig.savefig(pjoin("..", "output", "graph_rmse.png"))
+    fig.savefig(rmse_graph_path)
 
 
 
