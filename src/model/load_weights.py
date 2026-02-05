@@ -1,16 +1,16 @@
 
-
+from os.path import dirname, join as pjoin
 import numpy as np
 import torch
 import scipy.io as sio
 from model.model import MatlabLSTM
 
 
-l2_inp_wb_path = "model/weights/l2_inp_wb.mat"
-l2_rec_wb_path = "model/weights/l2_rec_wb.mat"
-l2_bias_path = "model/weights/l2_bias.mat"
-l3_wb_path = "model/weights/l3_wb.mat"
-l3_bias_path = "model/weights/l3_bias.mat"
+l2_inp_wb_path = pjoin('..', 'data', 'model_weights', 'l2_inp_wb.mat')
+l2_rec_wb_path = pjoin('..', 'data', 'model_weights', 'l2_rec_wb.mat')
+l2_bias_path = pjoin('..', 'data', 'model_weights', 'l2_bias.mat')
+l3_wb_path = pjoin('..', 'data', 'model_weights', 'l3_wb.mat')
+l3_bias_path = pjoin('..', 'data', 'model_weights', 'l3_bias.mat')
 
 def _to_tensor(a):
     # check

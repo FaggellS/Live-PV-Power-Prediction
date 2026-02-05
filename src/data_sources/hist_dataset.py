@@ -4,11 +4,11 @@ from os import remove
 import pandas as pd
 
 # cleaned, 10 min intervals
-irr_dir = pjoin('..', 'data', 'raw', 'completed_dataset_irradiance.xlsx') 
-temp_dir = pjoin('..', 'data', 'raw', 'completed_dataset_temperature.xlsx')
-hist_out_dir = pjoin('..', 'data','raw', 'reduced_dataset_mean_PVpower.xlsx')
+irr_dir = pjoin('..', 'data', 'historical_data', 'completed_dataset_irradiance.xlsx') 
+temp_dir = pjoin('..', 'data', 'historical_data', 'completed_dataset_temperature.xlsx')
+hist_out_dir = pjoin('..', 'data','historical_data', 'reduced_dataset_mean_PVpower.xlsx')
 
-path_to_merged = pjoin('..', 'data', 'merged_simulated_data.xlsx')
+path_to_merged = pjoin('..', 'data', 'historical_data', 'merged_simulated_data.xlsx')
 
 
 def get_merged():
