@@ -24,7 +24,7 @@ If you'd rather avoid using uv, dependencies are listed in 'requirements.txt'
 
 **Before all else**: in order for the program to work, you will need to add some files in the **'data'** folder found at the project root:
 
-- Inside **'historical-data**, the following files are required:
+- Inside **'historical-data'**, the following files are required:
     - **'completed_dataset_irradiance.xlsx'** - cleaned dataset, with the timestamp as the first column and the corresponding irradiance in the second;
     - **'completed_dataset_temperature.xlsx'** - cleaned dataset, with the same structure as above;
     - **'reduced_dataset_mean_PVpower.xlsx'** - the clean dataset, with the same structure as above and the 10 minute intervals.
@@ -39,21 +39,25 @@ If you'd rather avoid using uv, dependencies are listed in 'requirements.txt'
 ### Extracting your model's weights from Matlab
 
 You will need to do the following to obtain the above-mentioned weights:
+```
+load lstm.mat
+layers = net.Layers
+```
+For each layers containing weights (In our case we need `layers(2)` and `layers(3)` I think):
+```
+lX_inp_wb = specificLayer.InputWeights
+lX_rec_wb = specificLayer.RecurrentWeights # If this layer has them !
+lX_bias = specificLayer.Bias
+```
+You can then download these as .mat objects and import them inside the 'model_weights' folder.
 
-- 'load lstm.mat' (load the network)
-- 'layers = net.Layers'
-- for each layers containing weights (In our case we need 'layers(2)' and 'layers(3)' I think):
-    - 'lX_inp_wb = specificLayer.InputWeights'
-    - 'lX_rec_wb = specificLayer.RecurrentWeights (If this layer has them)'
-    - 'lX_bias = specificLayer.Bias'
-    - You can then download these as .mat objects and import them inside the 'model_weights' folder.
-
-- For now, this project only supports the same architecture of LSTM, as was originally provided.
+For now, this project only supports the same architecture of LSTM, as was originally provided.
 
 ## Running the program
  
-You can start the program by running **'main.py'** inside the **'src'** folder. When using uv, you can use the **'uv run main.py'** command inside src.
+You can start the program by running **'main.py'** inside the **`src`** folder. When using uv, you can use the `uv run main.py` command inside src.
 
 When you stop a simulation, useful information will be saved inside the folder **'output'**. You can also check the error and RMSE score in separate graphs. 
 
 Those 3 files will be overwritten once you start a new simulation, and if you quit the program without explicitely stopping a simulation, the generated data will be lost.
+
