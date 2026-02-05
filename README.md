@@ -44,7 +44,7 @@ If you want to modify the name of these files, the affected scripts are as follo
 - for **`historical-data`**, the only file that uses it is **`src/data_sources/hist_dataset.py`**.
 - for **`model_weigths`**, the only file that uses it is **`src/model/load_weights.py`**.
 
-#### Extracting your model's weights from Matlab
+### Extracting your model's weights from Matlab
 
 You will need to do the following to obtain the above-mentioned weights:
 ```
@@ -77,6 +77,7 @@ Those 3 files will be overwritten once you start a new simulation, and if you qu
 - For reference, here is how this project is structured:
   
 ![Project Architecture](/data/assets/architecture.jpg)
+
 
 
 
