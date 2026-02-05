@@ -25,7 +25,7 @@ If you'd rather avoid using uv, dependencies are listed in `requirements.txt`
 In order for the program to work, you will need to add some files in the **`data`** folder found at the project root:
 
 - Inside **`historical-data`**, the following files are required:
-    - **`completed_dataset_irradiance.xlsx`** - cleaned dataset, with the timestamp as the 1st column and the corresponding irradiance in the 2nd;
+    - **`completed_dataset_irradiance.xlsx`** - cleaned dataset, with the timestamp as the 1st column and the corresponding value in the 2nd;
     - **`completed_dataset_temperature.xlsx`** - cleaned dataset, with the same structure as above;
     - **`reduced_dataset_mean_PVpower.xlsx`** - the clean dataset, with the same structure as above and the 10 minute intervals.
 
@@ -60,6 +60,7 @@ You can start the program by running **`main.py`** inside the **`src`** folder. 
 When you stop a simulation, useful information will be saved inside the folder **`output`**. You can also check the error and RMSE score in separate graphs. 
 
 Those 3 files will be overwritten once you start a new simulation, and if you quit the program without explicitely stopping a simulation, the generated data will be lost.
+
 
 
 
