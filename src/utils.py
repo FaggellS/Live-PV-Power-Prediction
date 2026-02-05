@@ -30,7 +30,7 @@ def plot_pv(full_df, sw, ps):
     tss = full_df.index
     
 
-    x_label = f"Hours from {tss[0].day:02}.{tss[0].month:02}.{tss[0].year} to {tss[0].day:02}.{tss[0].month:02}.{tss[0].year}"
+    x_label = f"Hours from {tss[0].day:02}.{tss[0].month:02}.{tss[0].year} to {tss[-1].day:02}.{tss[-1].month:02}.{tss[-1].year}"
 
     times = [f"{ts.day:02}.{ts.month:02}.{ts.year} {ts.hour:01}:{ts.minute:01}" for ts in tss]
 
@@ -84,7 +84,7 @@ def plot_rmse(full_df, sw, ps):
 
     tss = full_df.index
     
-    x_label = f"Hours from {tss[0].day:02}.{tss[0].month:02}.{tss[0].year} to {tss[0].day:02}.{tss[0].month:02}.{tss[0].year}"
+    x_label = f"Hours from {tss[0].day:02}.{tss[0].month:02}.{tss[0].year} to {tss[-1].day:02}.{tss[-1].month:02}.{tss[-1].year}"
 
     times = [f"{ts.day:02}.{ts.month:02}.{ts.year} {ts.hour:01}:{ts.minute:01}" for ts in tss]
 
